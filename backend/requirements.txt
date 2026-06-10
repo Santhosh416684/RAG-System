@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+chromadb
+redis
+sentence-transformers
+ebooklib
+beautifulsoup4
+requests
+python-multipart
+python-dotenv
+pytest
