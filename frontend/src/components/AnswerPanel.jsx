@@ -1,7 +1,7 @@
 export default function AnswerPanel({ answer, loading, error, cached }) {
   if (loading) return (
     <div style={{ padding: 20, color: "#888", fontStyle: "italic" }}>
-      Mistral is thinking... this may take 30–60 seconds on CPU.
+      Model is thinking... this may take 30–60 seconds on CPU.
     </div>
   );
 

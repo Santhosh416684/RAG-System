@@ -21,7 +21,7 @@ def answer_question(question: str) -> dict:
     query_vector = embed_query(question)
 
     # Step 3 — Retrieve similar passages from ChromaDB
-    passages = search_similar(query_vector, top_k=3)
+    passages = search_similar(query_vector, top_k=5)
 
     if not passages:
         return {
@@ -35,16 +35,32 @@ def answer_question(question: str) -> dict:
         f"[From: {p['book']}]\n{p['text']}" for p in passages
     ])
 
-    prompt = f"""You are a helpful literary assistant. Answer the question using ONLY the passages provided below.
-If the answer is not in the passages, say "I don't have enough information in the ingested books to answer that."
-Be detailed and reference the book when relevant.
+
+
+    prompt = f"""
+You are a helpful literary assistant.
+
+Use the provided passages to answer the user's question.
+
+If the user asks for a summary, summarize the information contained in the passages.
+
+If the passages contain partial information, provide the best possible answer based on them.
+
+Only say "I don't have enough information in the ingested books to answer that"
+when the passages are completely unrelated to the question.
 
 Passages:
 {context}
 
-Question: {question}
+Question:
+{question}
 
-Answer:"""
+Answer:
+"""
+    
+    print("\n===== PROMPT =====")
+    print(prompt[:3000])
+    print("==================")
 
     # Step 5 — Generate answer with Mistral
     answer = generate(prompt)
