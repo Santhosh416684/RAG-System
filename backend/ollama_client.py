@@ -1,25 +1,21 @@
 import requests
-from config import OLLAMA_URL, OLLAMA_MODEL
+from config import OLLAMA_URL
 
 
-def generate(prompt: str, stream: bool = False) -> str:
+def generate(prompt: str, model: str, stream: bool = False) -> str:
     try:
         response = requests.post(
             OLLAMA_URL,
             json={
-                "model": OLLAMA_MODEL,
+                "model": model,
                 "prompt": prompt,
-                "stream": stream
+                "stream": False
             },
-            timeout=300 # Mistral can take up to 2 min on CPU
+            timeout=300
         )
         response.raise_for_status()
         return response.json()["response"]
     except requests.exceptions.ConnectionError:
-        raise RuntimeError(
-            "Ollama is not running. Start it with: ollama serve"
-        )
+        raise RuntimeError("Ollama is not running. Start it with: ollama serve")
     except requests.exceptions.Timeout:
-        raise RuntimeError(
-            "Ollama timed out. Try a shorter query or restart Ollama."
-        )
+        raise RuntimeError("Ollama timed out. Try a shorter query or restart Ollama.")

@@ -29,6 +29,8 @@ BOOKS_DIR.mkdir(exist_ok=True)
 
 class QuestionRequest(BaseModel):
     question: str
+    book_filter: str | None = None
+    mode: str = "auto"
 
 
 # ─── Public route — no login needed ───────────────────────
@@ -97,7 +99,11 @@ def ask(
 ):
     if not request.question.strip():
         raise HTTPException(400, "Question cannot be empty.")
-    result = answer_question(request.question)
+    result = answer_question(
+        request.question,
+        book_filter=request.book_filter,
+        mode=request.mode
+    )
     result["asked_by"] = current_user["username"]
     return result
 

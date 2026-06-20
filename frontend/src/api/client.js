@@ -35,11 +35,11 @@ export async function login(username, password) {
   return res.json();
 }
 
-export async function askQuestion(question) {
+export async function askQuestion(question, bookFilter = null, mode = "auto") {
   const res = await fetch(`${BASE}/ask`, {
     method: "POST",
     headers: authHeaders(),
-    body: JSON.stringify({ question }),
+    body: JSON.stringify({ question, book_filter: bookFilter, mode }),
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();

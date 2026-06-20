@@ -47,12 +47,19 @@ def store_chunks(chunks: list[dict], vectors: list[list[float]]):
     print(f"Stored {len(chunks)} chunks in Redis")
 
 
-def search_similar(query_vector: list[float], top_k: int = 5) -> list[dict]:
-    results = _collection.query(
-        query_embeddings=[query_vector],
-        n_results=top_k,
-        include=["documents", "metadatas", "distances"]
-    )
+def search_similar(query_vector: list[float], top_k: int = 5, book_filter: str = None) -> list[dict]:
+    query_params = {
+        "query_embeddings": [query_vector],
+        "n_results": top_k,
+        "include": ["documents", "metadatas", "distances"]
+    }
+
+    # If a specific book is selected, filter results to that book only
+    if book_filter:
+        query_params["where"] = {"book": book_filter}
+
+    results = _collection.query(**query_params)
+
     passages = []
     for i, doc in enumerate(results["documents"][0]):
         passages.append({

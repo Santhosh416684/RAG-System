@@ -10,10 +10,9 @@ import LoginForm from "./components/LoginForm";
 
 export default function App() {
   const { user, error, loading: authLoading, handleLogin, handleLogout } = useAuth();
-  const { ask, answer, sources, loading, error: askError, cached } = useAsk();
-  const { books, loading: booksLoading, reload, remove } = useBooks();
+  const { ask, answer, sources, loading, error: askError, cached, modelUsed } = useAsk();
+  const { books, loading: booksLoading, reload, remove } = useBooks(!!user);  // ← changed
 
-  // Show login page if not logged in
   if (!user) {
     return (
       <LoginForm
@@ -25,6 +24,7 @@ export default function App() {
   }
 
   const isAdmin = user.role === "admin";
+
 
   return (
     <div style={{ display: "flex", minHeight: "100vh",
@@ -75,10 +75,10 @@ export default function App() {
             ? "Admin — you can upload books and ask questions."
             : "Ask questions about the books."}
         </p>
-        <SearchBar onAsk={ask} loading={loading} />
+        <SearchBar onAsk={ask} loading={loading} books={books} />
         <div style={{ marginTop: 24 }}>
           <AnswerPanel answer={answer} loading={loading}
-            error={askError} cached={cached} />
+            error={askError} cached={cached} modelUsed={modelUsed} />
           <SourceChunks sources={sources} />
         </div>
       </main>
